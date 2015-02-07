@@ -8,6 +8,7 @@ from cassandra.cqltypes import DateType
 from cqlengine.exceptions import ValidationError
 from cassandra.encoder import cql_quote
 import six
+import json
 
 import sys
 
@@ -260,6 +261,15 @@ class Text(Column):
             if len(value) < self.min_length:
                 raise ValidationError('{} is shorter than {} characters'.format(self.column_name, self.min_length))
         return value
+
+class JSON(Text):
+
+    def to_python(self, value):
+        return json.loads(self.validate(value))
+
+    def to_database(self, value):
+        return self.validate(json.dumps(value))
+
 
 
 class Integer(Column):
