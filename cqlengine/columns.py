@@ -265,10 +265,10 @@ class Text(Column):
 class JSON(Text):
 
     def to_python(self, value):
-        return json.loads(self.validate(value))
+        return json.dumps(value)
 
     def to_database(self, value):
-        return self.validate(json.dumps(value))
+        return json.loads(value)
 
 
 
