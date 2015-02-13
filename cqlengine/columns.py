@@ -262,13 +262,19 @@ class Text(Column):
                 raise ValidationError('{} is shorter than {} characters'.format(self.column_name, self.min_length))
         return value
 
-class JSON(Text):
+class JSON(Column):
+    db_type = 'text'
 
     def to_python(self, value):
-        return json.dumps(value)
+        if value is None: return
+        if isinstance(value, basestring):
+            return json.loads(value)
+        else:
+            return value
 
     def to_database(self, value):
-        return json.loads(value)
+        if value is None: return
+        return json.dumps(value)
 
 
 
